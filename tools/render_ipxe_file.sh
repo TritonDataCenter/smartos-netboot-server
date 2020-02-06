@@ -66,7 +66,7 @@ a='platform/i86pc/amd64/boot_archive'
 h='platform/i86pc/amd64/boot_archive.hash'
 
 cd ${data}/os/ || exit
-for pi in $(find . -type d -name '20*T*Z'| sort -r); do
+for pi in $(find . -type d -name '20*T*Z' | tr -d './' | sort -r); do
 # Only include item if the kernel, boot_archive and boot_archive.hash#exist.
     if [[ -f $pi/$k ]] && [[ -f $pi/$a ]] && [[ -f $pi/$h ]]; then
         # shellcheck disable=SC2016
