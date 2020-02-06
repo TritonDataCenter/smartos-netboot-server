@@ -36,7 +36,7 @@ cd /opt
 git clone https://github.com/joyent/triton-dehydrated
 (
     cd triton-dehydrated
-    printf 'netboot.joyent.com netboot.smartos.org\n' > domains.ecdsa.txt
+    printf 'netboot.joyent.com netboot.smartos.org\n' > domains.txt
     printf '#CA="https://acme-staging-v02.api.letsencrypt.org/directory"\n' >> config.overrides
     printf 'SERVICES=( nginx )\n' >> config.overrides
     cp "${dirname}/tools/dehydrated-override-hook" override-hook
@@ -44,7 +44,7 @@ git clone https://github.com/joyent/triton-dehydrated
     ./dehydrated --register --accept-terms
     set +o errexit
     for tries in {1..5}; do
-        if ./dehydrated -f config.ecdsa -c -o /opt/ssl ; then
+        if ./dehydrated -c -o /opt/ssl ; then
             break
         fi
         : $tries
