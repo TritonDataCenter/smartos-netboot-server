@@ -66,12 +66,14 @@ a='platform/i86pc/amd64/boot_archive'
 h='platform/i86pc/amd64/boot_archive.hash'
 
 cd ${data}/os/ || exit
-for pi in $(find . -type d -name '20*T*Z' | tr -d './' | sort -r); do
-# Only include item if the kernel, boot_archive and boot_archive.hash#exist.
-    if [[ -f $pi/$k ]] && [[ -f $pi/$a ]] && [[ -f $pi/$h ]]; then
-        # shellcheck disable=SC2016
-        printf 'item %s ${space} %s\n' "$pi" "$pi"
-    fi
+for pattern in '20*T*Z' '*-20*T*Z'; do
+    for pi in $(find . -type d -name "$pattern" | tr -d './' | sort -r); do
+    # Only include item if the kernel, boot_archive and boot_archive.hash#exist.
+        if [[ -f $pi/$k ]] && [[ -f $pi/$a ]] && [[ -f $pi/$h ]]; then
+            # shellcheck disable=SC2016
+            printf 'item %s ${space} %s\n' "$pi" "$pi"
+        fi
+    done
 done
 
 cat << "FOOT"

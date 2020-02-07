@@ -31,3 +31,10 @@ You can use `tools/fetch_pi.sh` to install a new platform by its timestamp.
 
 Once per day, a cron job runs that looks for new images. We publish new images
 every two weeks, but sometimes they might be late.
+
+### Additional Images
+
+You can add additional images (e.g., experimental features) by naming the
+directory `<something>-<platform_version>`. These will be added to the menu
+after release images, but there's no automatic management mechanism. They need
+to be added to, and removed from, the directory manually.
