@@ -69,7 +69,8 @@ cd ${data}/os/ || exit
 for pattern in '20*T*Z' '*-20*T*Z'; do
     for pi in $(find . -type d -name "$pattern" | tr -d './' | sort -r); do
     # Only include item if the kernel, boot_archive and boot_archive.hash#exist.
-        if [[ -f $pi/$k ]] && [[ -f $pi/$a ]] && [[ -f $pi/$h ]]; then
+        if [[ -f $pi/$k ]] && [[ -f $pi/$a ]] && [[ -f $pi/$h ]] && \
+          ! [[ -f $pi/disable ]]; then
             # shellcheck disable=SC2016
             printf 'item %s ${space} %s\n' "$pi" "$pi"
         fi

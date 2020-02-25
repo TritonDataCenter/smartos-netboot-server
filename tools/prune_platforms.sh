@@ -84,9 +84,16 @@ keep=4
 del=$(( keep + 1))
 
 cd "${data}/os"
-# shellcheck disable=2061
-mapfile -t delq < <(find . -type d -name '20*T*Z' | sort -r | sed -n $del',$ p')
+mapfile -t disableq < <(find ${data}/os -type d -name '20*T*Z' | sort -r | sed -n $del',$ p')
 
-for pi in "${delq[@]}"; do
-    rm -rf "${pi:?}"
+# Disable the PI so that it doesn't get included in the menu
+for pi in "${disableq[@]}"; do
+    [[ -f ${pi}/disable ]] || touch "${pi}/disable"
+done
+
+# netboot.xyz refreshes the list of PIs from us once per day, so only delete
+# platforms older than 2 days.
+mapfile -t deleteq < <(find ${data}/os -type f -name disable -mtime +2 )
+for dfile in "${deleteq[@]}"; do
+    rm -rf "$(basename "$dfile")"
 done
