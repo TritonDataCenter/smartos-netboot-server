@@ -95,5 +95,5 @@ done
 # platforms older than 2 days.
 mapfile -t deleteq < <(find ${data}/os -type f -name disable -mtime +2 )
 for dfile in "${deleteq[@]}"; do
-    rm -rf "$(basename "$dfile")"
+    rm -rf "$(dirname "$dfile")"
 done
