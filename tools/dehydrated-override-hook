@@ -21,13 +21,8 @@ function restart_service() {
     case "$uname_s" in
         SunOS)
             if svcs -H "${SERVICE}" | grep ^online; then
-                if svcprop -p refresh "${SERVICE}"; then
-                    printf 'Refreshing %s...' "${SERVICE}"
-                    svcadm refresh "${SERVICE}"
-                else
-                    printf 'Restarting %s...' "${SERVICE}"
-                    svcadm restart "${SERVICE}"
-                fi
+                printf 'Restarting %s...' "${SERVICE}"
+                svcadm restart "${SERVICE}"
                 printf 'done.\n'
             else
                 printf 'Service "%s" is not online, skipping.\n' "${service}"
@@ -81,6 +76,6 @@ function unchanged_cert {
     echo "Certificate unchanged."
 }
 
-if [[ -f config.overrides ]]; then
-    source config.overrides
+if [[ -f ${BASEDIR}/config.overrides ]]; then
+    source ${BASEDIR}/config.overrides
 fi
