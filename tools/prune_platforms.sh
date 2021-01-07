@@ -7,9 +7,10 @@
 #
 
 #
-# Copyright 2020 Joyent, Inc.
+# Copyright 2021 Joyent, Inc.
 #
 
+# shellcheck disable=SC2154
 if [[ -n "$TRACE" ]]; then
     export PS4='[\D{%FT%TZ}] ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
     set -o xtrace
@@ -73,9 +74,7 @@ shopt -s extglob
 trap trap_err ERR
 set -o errtrace
 
-dirname="$(cd "$(dirname "$0")"/../; pwd)"
-
-data=./data
+data="${1:-./data}"
 keep=4
 # shellcheck disable=SC1090
 [[ -f ${dirname}/config ]] && source "${dirname}/config"

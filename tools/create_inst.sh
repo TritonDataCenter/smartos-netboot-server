@@ -7,9 +7,10 @@
 #
 
 #
-# Copyright 2020 Joyent, Inc.
+# Copyright 2021 Joyent, Inc.
 #
 
+# shellcheck disable=SC2154
 if [[ -n "$TRACE" ]]; then
     export PS4='[\D{%FT%TZ}] ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
     set -o xtrace
@@ -25,11 +26,13 @@ function usage () {
     exit "$1"
 }
 
-while getopts "a:n:p:" options; do
+while getopts "a:d:n:p:z" options; do
     case $options in
-        a) export SDC_ACCOUNT="${OPTARG}" ;;
-        p) profile=( -p "${OPTARG}" ) ;;
+        a) account="${OPTARG}" ;;
+        d) datadir="${OPTARG}" ;;
+        p) profile="${OPTARG}" ;;
         n) name="${OPTARG}" ;;
+        z) delegate_dataset='--delegate-dataset' ;;
         *) usage 1 ;;
     esac
 done
@@ -38,12 +41,14 @@ if [[ -z $name ]]; then
     name='netboot-{{shortId}}'
 fi
 
+opts=( -p "${profile:?}" -a "${account:?}" )
 printf 'Creating netboot instance...'
-
-inst=$( triton "${profile[@]}" inst create -j base-64-lts g4-highcpu-256M \
+inst=$( triton "${opts[@]}" inst create -j \
+    base-64-lts g4-highcpu-256M \
     --name="$name" --network=Joyent-SDC-Public \
-    -m triton.cns.status=down -t triton.cns.services=netboot \
+    -m triton.cns.status=down -m datadir="${datadir:-/data}" "${delegate_dataset}" \
+    -t triton.cns.services=netboot \
     --script="${dirname}/tools/user-script.sh" | json id)
 printf 'done.\n'
 
-triton "${profile[@]}" inst wait "$inst"
+triton "${opts[@]}" inst wait "$inst"

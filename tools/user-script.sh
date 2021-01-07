@@ -7,7 +7,7 @@
 #
 
 #
-# Copyright 2020 Joyent, Inc.
+# Copyright 2021 Joyent, Inc.
 #
 
 # This script is usable as a Triton user-script.
@@ -18,12 +18,18 @@ set -o xtrace
 
 PATH=/usr/local/sbin:/usr/local/bin:/opt/local/sbin:/opt/local/bin:/usr/sbin:/usr/bin:/sbin
 
-[[ -f /data/smartos.ipxe ]] && exit
+[[ -f /opt/netboot/.setup-complete ]] && exit
 
 mdata-put triton.cns.status down
+datadir=$(mdata-get datadir)
+
+if [[ -d /zones/$(zonename)/data ]]; then
+        zfs create -o "mountpoint=${datadir}" "zones/$(zonename)/data/repo"
+else
+        mkdir -p "$datadir"
+fi
 pkgin -y install git-base
 cd /opt
 git clone https://github.com/joyent/smartos-netboot-server netboot
 cd netboot
-printf 'data=/data\nkeep=6\n' > config
-./tools/setup.sh
+TRACE=1 ./tools/setup.sh

@@ -7,9 +7,10 @@
 #
 
 #
-# Copyright 2020 Joyent, Inc.
+# Copyright 2021 Joyent, Inc.
 #
 
+# shellcheck disable=SC2154
 if [[ -n "$TRACE" ]]; then
     export PS4='[\D{%FT%TZ}] ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
     set -o xtrace
@@ -73,14 +74,11 @@ shopt -s extglob
 trap trap_err ERR
 set -o errtrace
 
-dirname="$(cd "$(dirname "$0")"/../; pwd)"
-
 manta_url='https://us-east.manta.joyent.com'
 repo='/Joyent_Dev/public/SmartOS'
 
-data=./data
-# shellcheck disable=SC1090
-[[ -f ${dirname}/config ]] && source "${dirname}/config"
+version="$1"
+data="${2:-./data}"
 
 [[ -d $data ]] || mkdir -p "$data"
 
@@ -104,9 +102,13 @@ function extract_tar () {
     tar zxf "${1:?}" -C "${2:?}"
 }
 
-version="$1"
-
-[[ -z $version ]] && version=$(latest_pi)
+if [[ $version == "/data" ]]; then
+    printf 'Error: No platform version specified\n'
+    exit 1
+fi
+if [[ "${version:?}" == "latest" ]]; then
+    version=$(latest_pi)
+fi
 [[ -d ${data}/os/${version} ]] && exit
 
 tarball=$( get_tarball_name "$version" )
