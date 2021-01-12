@@ -20,6 +20,18 @@ set -o errexit
 
 data="${1:-./data}"
 
+k='platform/i86pc/kernel/amd64/unix'
+a='platform/i86pc/amd64/boot_archive'
+h='platform/i86pc/amd64/boot_archive.hash'
+
+cd "${data}/os/" || exit
+list=()
+while IFS='' read -r line; do list+=("$line"); done < <(
+    # Want normal PIs to be first. experimetnal next
+    /usr/bin/find -E . -maxdepth 1 -type d -regex '\./20[[:digit:]]{6}T[[:digit:]]{6}Z' | tr -d './' | sort -r
+    /usr/bin/find -E . -maxdepth 1 -type d -regex '\./.*-20[[:digit:]]{6}T[[:digit:]]{6}Z' | tr -d './' | sort -r
+)
+
 cat << "CHUNK1"
 #!ipxe
 
@@ -36,7 +48,8 @@ cat << "CHUNK1"
 :custom
 clear smartos_build
 clear kflags
-set bp_console text
+set base_url https://netboot.smartos.org
+set bp_console ttyb
 set bp_smartos true
 set bp_noimport false
 set kmdb_e false
@@ -47,26 +60,19 @@ goto smartos_menu
 
 :smartos_menu
 menu Joyent SmartOS
-item --gap Platform Images:
 CHUNK1
 
 ###
 ### Note:
-### Netboot.xyz depends on the last line of the HEAD and the first line
-### of the FOOT HERE docs. If that text is not in the ipxe file their
-### ingestion will break.
+### Netboot.xyz depends on these marker lines. If that text is not in the ipxe
+### file their ingestion will break. Everything between these markers will be
+### included in their menu.
 ###
 
-k='platform/i86pc/kernel/amd64/unix'
-a='platform/i86pc/amd64/boot_archive'
-h='platform/i86pc/amd64/boot_archive.hash'
+# BEGIN netboot.xyz marker -- do not change this
+printf 'item --gap Platform Images:\n'
+# END netboot.xyz marker -- do not change this
 
-cd ${data}/os/ || exit
-mapfile -t list < <(
-    # Want normal PIs to be first. experimetnal next
-    /usr/bin/find -E . -maxdepth 1 -type d -regex '\./20[[:digit:]]{6}T[[:digit:]]{6}Z' | tr -d './' | sort -r
-    /usr/bin/find -E . -maxdepth 1 -type d -regex '\./.*-20[[:digit:]]{6}T[[:digit:]]{6}Z' | tr -d './' | sort -r
-)
 for pi in "${list[@]}"; do
 # Only include item if the kernel, boot_archive and boot_archive.hash#exist.
     if [[ -f $pi/$k ]] && [[ -f $pi/$a ]] && [[ -f $pi/$h ]] && \
@@ -76,8 +82,11 @@ for pi in "${list[@]}"; do
     fi
 done
 
+# BEGIN netboot.xyz marker -- do not change this
+printf 'item --gap Options:\n'
+# END netboot.xyz marker -- do not change this
+
 cat << "CHUNK2"
-item --gap Options:
 item change_console ${space} OS Console: ${bp_console}
 item toggle_pool ${space} Rescue mode: ${bp_noimport}
 item toggle_kmdb_e ${space} Load Kernel Debugger: ${kmdb_e}
@@ -100,9 +109,9 @@ goto smartos_boot
 :smartos_boot
 iseq ${kmdb_e} true && set kflags:hex 2d:6b ||
 iseq ${kmdb_b} true && set kflags:hex 2d:6b:64 ||
-kernel https://netboot.joyent.com/os/${smartos_build}/platform/i86pc/kernel/amd64/unix ${kflags:string} -B console=${bp_console},ttya-mode="115200,8,n,1,-",ttyb-mode="115200,8,n,1,-",ttyc-mode="115200,8,n,1,-",ttyd-mode="115200,8,n,1,-",smartos=${bp_smartos},noimport=${bp_noimport}${root_shadow:string}
-module https://netboot.joyent.com/os/${smartos_build}/platform/i86pc/amd64/boot_archive type=rootfs name=ramdisk || goto fail
-module https://netboot.joyent.com/os/${smartos_build}/platform/i86pc/amd64/boot_archive.hash type=hash name=ramdisk || goto fail
+kernel ${base_url}/os/${smartos_build}/platform/i86pc/kernel/amd64/unix ${kflags:string} -B console=${bp_console},ttya-mode="115200,8,n,1,-",ttyb-mode="115200,8,n,1,-",ttyc-mode="115200,8,n,1,-",ttyd-mode="115200,8,n,1,-",smartos=${bp_smartos},noimport=${bp_noimport}${root_shadow:string}
+module ${base_url}/os/${smartos_build}/platform/i86pc/amd64/boot_archive type=rootfs name=ramdisk || goto fail
+module ${base_url}/os/${smartos_build}/platform/i86pc/amd64/boot_archive.hash type=hash name=ramdisk || goto fail
 boot || goto smartos_menu
 
 :change_console
