@@ -109,9 +109,16 @@ goto smartos_boot
 :smartos_boot
 iseq ${kmdb_e} true && set kflags:hex 2d:6b ||
 iseq ${kmdb_b} true && set kflags:hex 2d:6b:64 ||
-kernel ${base_url}/os/${smartos_build}/platform/i86pc/kernel/amd64/unix ${kflags:string} -B console=${bp_console},ttya-mode="115200,8,n,1,-",ttyb-mode="115200,8,n,1,-",ttyc-mode="115200,8,n,1,-",ttyd-mode="115200,8,n,1,-",smartos=${bp_smartos},noimport=${bp_noimport}${root_shadow:string}
+kernel ${base_url}/os/${smartos_build}/platform/i86pc/kernel/amd64/unix ${kflags:string} -B console=${bp_console},${bp_console}-mode="115200,8,n,1,-",smartos=${bp_smartos},noimport=${bp_noimport}${root_shadow:string}
 module ${base_url}/os/${smartos_build}/platform/i86pc/amd64/boot_archive type=rootfs name=ramdisk || goto fail
 module ${base_url}/os/${smartos_build}/platform/i86pc/amd64/boot_archive.hash type=hash name=ramdisk || goto fail
+CHUNK3
+
+if [[ -n $TINKERBELL ]]; then
+    printf 'module http://metadata.platformequinix.com/metadata type=file name=tinkerbell.json ||\n'
+fi
+
+cat << "CHUNK_Z"
 boot || goto smartos_menu
 
 :change_console
@@ -140,4 +147,4 @@ goto smartos_menu
 :smartos_exit
 clear menu
 exit 0
-CHUNK3
+CHUNK_Z
