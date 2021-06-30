@@ -4,6 +4,8 @@ This repo configures a SmartOS zone to serve platform images for booting
 via iPXE. It's primarily intended to support [netboot.xyz][1], but it can
 also be used to provide netboot for a local environment.
 
+[1]: https://netboot.xyz
+
 ## Using
 
 In order to netboot from this server, chain load `/smartos.ipxe`. You can boot
