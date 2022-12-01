@@ -8,6 +8,7 @@
 
 #
 # Copyright 2021 Joyent, Inc.
+# Copyright 2022 MNX Cloud, Inc.
 #
 
 # shellcheck disable=SC2154
@@ -43,6 +44,7 @@ cat << "CHUNK1"
 
 #
 # Copyright 2021 Joyent, Inc.
+# Copyright 2022 MNX Cloud, Inc.
 #
 
 :custom
@@ -59,7 +61,7 @@ set space ${space:string}
 goto smartos_menu
 
 :smartos_menu
-menu Joyent SmartOS
+menu Triton SmartOS
 CHUNK1
 
 ###
@@ -94,7 +96,7 @@ item toggle_kmdb_b ${space} Boot Kernel Debugger First: ${kmdb_b}
 
 iseq ${bp_noimport} true && item --gap ${space} ||
 iseq ${bp_noimport} true && item --gap ${space} Zpool will not be imported. Rescue mode root password can be found at ||
-iseq ${bp_noimport} true && item --gap ${space} https://us-east.manta.joyent.com/Joyent_Dev/public/SmartOS/smartos.html ||
+iseq ${bp_noimport} true && item --gap ${space} https://us-central.manta.mnx.io/Joyent_Dev/public/SmartOS/smartos.html ||
 CHUNK2
 
 printf '\nchoose --default %s --timeout 10000 smartos_build &&\n' "${list[0]}"

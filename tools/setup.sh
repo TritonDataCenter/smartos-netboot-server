@@ -8,6 +8,7 @@
 
 #
 # Copyright 2021 Joyent, Inc.
+# Copyright 2022 MNX Cloud, Inc.
 #
 
 set -o errexit
@@ -37,7 +38,7 @@ cp "${dirname}/nginx/dhparam.pem" /opt/ssl/dhparam.pem
 pushd /opt
 if ! [[ -d /opt/dehydrated ]]; then
     mkdir -p /opt/dehydrated
-    latest=$(curl -s https://api.github.com/repos/joyent/triton-dehydrated/releases/latest | json assets.0.browser_download_url)
+    latest=$(curl -s https://api.github.com/repos/TritonDataCenter/triton-dehydrated/releases/latest | json assets.0.browser_download_url)
     curl -#L "$latest" | gtar --no-same-owner -zxv -C /opt/dehydrated
     pushd dehydrated
     printf 'netboot.smartos.org netboot.joyent.com\n' > domains.txt

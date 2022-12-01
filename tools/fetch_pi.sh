@@ -8,6 +8,7 @@
 
 #
 # Copyright 2021 Joyent, Inc.
+# Copyright 2022 MNX Cloud, Inc.
 #
 
 # shellcheck disable=SC2154
@@ -74,7 +75,7 @@ shopt -s extglob
 trap trap_err ERR
 set -o errtrace
 
-manta_url='https://us-east.manta.joyent.com'
+manta_url='https://us-central.manta.mnx.io'
 repo='/Joyent_Dev/public/SmartOS'
 
 version="$1"

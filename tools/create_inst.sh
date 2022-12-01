@@ -8,6 +8,7 @@
 
 #
 # Copyright 2021 Joyent, Inc.
+# Copyright 2022 MNX Cloud, Inc.
 #
 
 # shellcheck disable=SC2154
@@ -45,7 +46,7 @@ opts=( -p "${profile:?}" -a "${account:?}" )
 printf 'Creating netboot instance...'
 inst=$( triton "${opts[@]}" inst create -j \
     base-64-lts g4-highcpu-256M \
-    --name="$name" --network=Joyent-SDC-Public \
+    --name="$name" --network=MNX-Triton-Public \
     -m triton.cns.status=down -m datadir="${datadir:-/data}" "${delegate_dataset}" \
     -t triton.cns.services=netboot \
     --script="${dirname}/tools/user-script.sh" | json id)

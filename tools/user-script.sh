@@ -8,6 +8,7 @@
 
 #
 # Copyright 2021 Joyent, Inc.
+# Copyright 2022 MNX Cloud, Inc.
 #
 
 # This script is usable as a Triton user-script.
@@ -30,6 +31,6 @@ else
 fi
 pkgin -y install git-base
 cd /opt
-git clone https://github.com/joyent/smartos-netboot-server netboot
+git clone https://github.com/TritonDataCenter/smartos-netboot-server netboot
 cd netboot
 TRACE=1 ./tools/setup.sh

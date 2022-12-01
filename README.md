@@ -1,5 +1,10 @@
 # smartos-netboot-server
 
+<!--
+    Copyright 2021 Joyent, Inc.
+    Copyright 2022 MNX Cloud, Inc.
+-->
+
 This repo configures a SmartOS zone to serve platform images for booting
 via iPXE. It's primarily intended to support [netboot.xyz][1], but it can
 also be used to provide netboot for a local environment.
@@ -9,15 +14,14 @@ also be used to provide netboot for a local environment.
 ## Using
 
 In order to netboot from this server, chain load `/smartos.ipxe`. You can boot
-from Joyent's netboot server by loading
-<https://netboot.smartos.org/smartos.ipxe> or
-<https://netboot.joyent.com/smartos.ipxe>.
+from the public SmartOS netboot server by loading
+<https://netboot.smartos.org/smartos.ipxe>.
 
 ## Set up
 
 To set up a new server, clone this repository into a base-64-lts@19.4.0 or
 later SmartOS zone (generally at `/opt/netboot`) and run `tools/setup.sh`.
-This setup is configured for Joyent's usage (e.g., Joyent domains forLet's
+This setup is configured for our usage (e.g., SmartOS domains for Let's
 Encrypt), but you can fork and customize as necessary. We'll accept pull
 requests to make it more generic provided that the default behavior still
 works for us non-interactively.
