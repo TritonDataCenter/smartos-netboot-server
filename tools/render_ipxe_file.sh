@@ -50,7 +50,6 @@ cat << "CHUNK1"
 :custom
 clear smartos_build
 clear kflags
-set base_url https://netboot.smartos.org
 set bp_console ttyb
 set bp_smartos true
 set bp_noimport false
@@ -111,9 +110,9 @@ goto smartos_boot
 :smartos_boot
 iseq ${kmdb_e} true && set kflags:hex 2d:6b ||
 iseq ${kmdb_b} true && set kflags:hex 2d:6b:64 ||
-kernel ${base_url}/os/${smartos_build}/platform/i86pc/kernel/amd64/unix ${kflags:string} -B console=${bp_console},${bp_console}-mode="115200,8,n,1,-",smartos=${bp_smartos},noimport=${bp_noimport}${root_shadow:string}
-module ${base_url}/os/${smartos_build}/platform/i86pc/amd64/boot_archive type=rootfs name=ramdisk || goto fail
-module ${base_url}/os/${smartos_build}/platform/i86pc/amd64/boot_archive.hash type=hash name=ramdisk || goto fail
+kernel os/${smartos_build}/platform/i86pc/kernel/amd64/unix ${kflags:string} -B console=${bp_console},${bp_console}-mode="115200,8,n,1,-",smartos=${bp_smartos},noimport=${bp_noimport}${root_shadow:string}
+module os/${smartos_build}/platform/i86pc/amd64/boot_archive type=rootfs name=ramdisk || goto fail
+module os/${smartos_build}/platform/i86pc/amd64/boot_archive.hash type=hash name=ramdisk || goto fail
 CHUNK3
 
 if [[ -n $TINKERBELL ]]; then
