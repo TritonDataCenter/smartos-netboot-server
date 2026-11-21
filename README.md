@@ -3,6 +3,7 @@
 <!--
     Copyright 2021 Joyent, Inc.
     Copyright 2022 MNX Cloud, Inc.
+    Copyright 2026 Edgecast Cloud LLC.
 -->
 
 This repo configures a SmartOS zone to serve platform images for booting
